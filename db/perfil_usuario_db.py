@@ -34,9 +34,9 @@ def getUsuario (user: str):
 		return None
 
 def updateUsuario(user: persona):
-	database_users[user.usuario] = user
+	database_users[user.idUsuario] = user
 	return user
 
 def createUsuario (user: persona):
-	database_users.append(user)
+	database_users[user.idUsuario] = user
 	return user
