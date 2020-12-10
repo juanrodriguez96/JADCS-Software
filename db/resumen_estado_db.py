@@ -1,46 +1,61 @@
 from datetime import datetime
 from pydantic import BaseModel
+from typing import Dict
+from db.perfil_usuario_db import persona, getUsuario
 
-#date_finish = datetime.now() + timedelta(days=1) -- Para la funcion de agregar dias de vencimiento
+# date_finish = datetime.now() + timedelta(days=1) -- Para la funcion de agregar dias de vencimiento
 
 
 class DocumentoInDB(BaseModel):
-    id_radicado: int = 0
-    username: str
-    date_up: datetime = datetime.now()
-    tip:str
+    id_radicado: str
+    fecha_radicacion: datetime
+    fecha_asignacion: datetime = datetime.now()
+    fecha_vencimiento: datetime
+    tipo: str
     status: str
-    # Encargado: str               Persona encargada de tramitar el documento
+    anexos: int = 0
 
-database_documento = []
-generator = {"id":0}
+
+database_documento = Dict[str, DocumentoInDB]
+generator = {"id": 0}
 
 database_documento = {
-    "1": DocumentoInDB(**{"id_radicado":"1",
-                          "username":"Amir",
-                          "date_up":"2020-12-09",
-                          "tip":"derecho de peticion"
-                          "status":"por asignacion"}),
+    "camilo24": [DocumentoInDB(**{
+        "id_radicado": "202012001",
+        "fecha_radicacion": "2020-12-09",
+        "fecha_vencimiento": "2021-01-09",
+        "tipo": "derecho de peticion",
+        "status": "no vencido"})],
 
-    "2": DocumentoInDB(**{"id_radicado":"2",
-                          "username":"Juan",
-                          "date_up":"2020-12-08",
-                          "tip":"tutela"
-                          "status":"por asignacion"}),
-
-
-def save_documento(documento_in_db: DocumentoInDB):
-    generator["id"] = generator["id"] + 1
-    documento_in_db.id_radicado = generator["id"]
-    database_documentos.append(documento_in_db)
-    return documento_in_db
-
-def consultar_documento(documento_in_db:DocumentoInDB)
-    if id_radicado in database_documento:
-        return database_documento[id_radicado]
-    else:
-        return None
+    "andres18": [DocumentoInDB(**{
+        "id_radicado": "202012002",
+        "fecha_radicacion": "2020-12-09",
+        "fecha_vencimiento": "2020-12-30",
+        "tipo": "tutela",
+        "status": "no vencido",
+        "anexos": 2})],
+}
 
 
+def mostrar_lista(id_usuario: str):
+    return database_documento[id_usuario]
 
 
+def agregar_doc_lista(documento_in_db: DocumentoInDB, id_usuario: str):
+    if(getUsuario(id_usuario)):
+        database_documento[id_usuario].append(documento_in_db)
+        return database_documento
+
+
+def quitar_doc_lista(radicado: str, id_usuario: str):
+    lista = database_documento(id_usuario)
+    for i in range(len(lista)):
+        if lista[i].id_radicado == radicado:
+            del database_documento(id_usuario)[i]
+            return database_documento
+    return None
+
+
+def actualizar_documento(doc: DocumentoInDB, id_usuario: str):
+    database_documento[id_usuario] = doc
+    return doc
