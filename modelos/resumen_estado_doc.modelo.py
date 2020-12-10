@@ -2,14 +2,15 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-
 class DocumentoIn(BaseModel):
+    id_radicado: str
     username: str
-    tip: str
+    fecha_asignacion: datetime
+    status: str
+
 
 class DocumentoOut(BaseModel):
-    id_radicado: int
+    id_radicado: str
     username: str
-    date_up: datetime
-    tip: str
+    fecha_asignacion: datetime
     status: str
