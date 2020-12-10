@@ -13,13 +13,13 @@ class persona(BaseModel):
 database_users = Dict[str, persona]
 
 database_users = {
-    "camilo24": persona(**{"usuario": "camilo24",
+    "camilo24": persona(**{"idUsuario": "camilo24",
                            "contrasenia": "root",
                            "nombre": "camilo",
                            "apellido": "perez",
                            "categoria": "Jefe"}),
 
-    "andres18": persona(**{"usuario": "andres18",
+    "andres18": persona(**{"idUsuario": "andres18",
                            "contrasenia": "hola",
                            "nombre": "andres",
                            "apellido": "lopez",
