@@ -60,7 +60,9 @@ def definir_semaforo(documento_in_db: DocumentoInDB):
 
 
 def listar_documentos_usuario(id_usuario: str):
-    return database_documento[id_usuario]
+    if id_usuario in database_documento:
+        return database_documento[id_usuario]
+    return None
 
 
 def agregar_doc_lista(documento_in_db: DocumentoInDB, id_usuario: str):

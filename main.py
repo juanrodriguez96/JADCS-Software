@@ -12,10 +12,9 @@ from db.supervision_db import getSupervision, updateSupervision
 app = FastAPI()
 
 
-@app.get("/resumen/{nombre}")
+@app.get("/resumendoc/{nombre}")
 async def lista_doc_usuario(nombre: str):
     el_usuario = getUsuario(nombre)
-
     if el_usuario is None:
         raise HTTPException(status_code=404,
                             detail="El usuario no existe")
