@@ -4,7 +4,7 @@ from db.perfil_usuario_db import persona
 from db.perfil_usuario_db import getUsuario, updateUsuario, createUsuario
 from db.supervision_db import Supervision
 from db.supervision_db import getSupervision, updateSupervision
-from modelos.perfil_usuario_db import personaIn, personaOut
+from modelos.perfil_usuario_modelo import personaIn, personaOut
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
