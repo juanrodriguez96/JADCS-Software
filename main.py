@@ -38,13 +38,14 @@ async def agregar_doc(documento: resumen_estado_db.DocumentoInDB):
         else: 
             raise HTTPException(status_code=400, detail="El radicado ya existe en la base de datos")  
     
-     
+#Operación GET (READ) para perfil de usuario
 @app.get("/usuario/perfil/{usuario}")
 async def get_Equipo(usuario: str):
     user = getUsuario(usuario)
     if user == None:
         raise HTTPException(status_code=404, detail="El usuario no existe")
-
+    
+    # Mostrar si el usuario tiene un equipo a cargo
     equipo = getSupervision(usuario)
     if len(equipo) == 0:
         return {"Perfil" : {"Usuario": user.idUsuario,
@@ -58,6 +59,8 @@ async def get_Equipo(usuario: str):
                         "Apellido" : user.apellido,
                         "Categoria" : user.categoria,
                         "Equipo" : equipo}}
+
+
 #Operación POST (CREATE) para perfil de usuario
 @api.post("/usuario/perfil/")
 async def crear_perfil_usuario(usuario: personaIn):
