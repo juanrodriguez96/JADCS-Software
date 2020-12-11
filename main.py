@@ -1,13 +1,13 @@
+from fastapi import FastAPI, HTTPException
+from modelos.resumen_estado_doc_modelo import DocumentoIn
+from modelos.perfil_usuario_modelo import personaIn, personaOut
+from db.resumen_estado_db import DocumentoInDB
 from db.resumen_estado_db import listar_documentos_usuario, definir_semaforo, agregar_doc_lista
 from db.perfil_usuario_db import getUsuario
 from db.perfil_usuario_db import persona
 from db.perfil_usuario_db import getUsuario, updateUsuario, createUsuario
 from db.supervision_db import Supervision
 from db.supervision_db import getSupervision, updateSupervision
-from db.resumen_estado_db import DocumentoInDB
-from modelos.perfil_usuario_modelo import personaIn, personaOut
-from modelos.resumen_estado_doc_modelo import DocumentoIn
-from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
@@ -69,10 +69,8 @@ async def get_Equipo(usuario: str):
                        "Equipo": equipo}}
 
 
-# Operación POST (CREATE) para perfil de usuario
 @app.post("/usuario/perfil/")
-async def crear_perfil_usuario(usuario: persona):
-
+async def crear_perfil_usuario(usuario: personaIn):
     usuario_in_db = getUsuario(usuario.idUsuario)
     if usuario_in_db is None:
         createUsuario(usuario)
@@ -81,8 +79,6 @@ async def crear_perfil_usuario(usuario: persona):
 
     usuario_out = personaOut(**usuario.dict())
     return usuario_out
-
-# Operación PUT (UPDATE) para perfil de usuario
 
 
 @app.put("/usuario/perfil/")
