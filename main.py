@@ -1,10 +1,14 @@
 from db.resumen_estado_db import listar_documentos_usuario, definir_semaforo
 from db.perfil_usuario_db import getUsuario
+<<<<<<< HEAD
 from db.perfil_usuario_db import persona
 from db.perfil_usuario_db import getUsuario, updateUsuario, createUsuario
 from db.supervision_db import Supervision
 from db.supervision_db import getSupervision, updateSupervision
 
+=======
+from modelos.perfil_usuario_db import personaIn, personaOut
+>>>>>>> bb9f975d9f0b24e701535026b96a4beec8b3e78c
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -45,3 +49,16 @@ async def get_Equipo(usuario: str):
                         "Apellido" : user.apellido,
                         "Categoria" : user.categoria,
                         "Equipo" : equipo}}
+#Operación POST (CREATE) para perfil de usuario
+@api.post("/usuario/perfil/")
+async def crear_perfil_usuario(usuario: personaIn):
+
+    usuario_db = getUsuario(usuario.idUsuario)
+
+    if usuario_db == None:
+        createUsuario(usuario)
+    elif usuario_db != None:
+        return {usuario.idUsuario,"Ya existe"}
+
+    usuario_out = personaOut(**usuario_db.dict())
+    return usuario_out
