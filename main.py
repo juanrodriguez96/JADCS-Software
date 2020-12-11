@@ -35,7 +35,6 @@ async def agregar_doc(documento: DocumentoIn, nombre: str):
         raise HTTPException(status_code=404, detail="El usuario no existe")
 
     documento_db = DocumentoInDB(**documento.dict(), semaforo="")
-
     definir_semaforo(documento_db)
     operacion_exitosa = agregar_doc_lista(documento_db, nombre)
 
@@ -70,7 +69,7 @@ async def get_Equipo(usuario: str):
 
 
 @app.post("/usuario/perfil/")
-async def crear_perfil_usuario(usuario: personaIn):
+async def crear_perfil_usuario(usuario: persona):
     usuario_in_db = getUsuario(usuario.idUsuario)
     if usuario_in_db is None:
         createUsuario(usuario)
