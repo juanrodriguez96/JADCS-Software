@@ -48,12 +48,8 @@ def agregar_doc_lista(documento_in_db: DocumentoInDB, id_usuario: str):
 
 
 def quitar_doc_lista(radicado: str, id_usuario: str):
-    lista = database_documento(id_usuario)
-    for i in range(len(lista)):
-        if lista[i].id_radicado == radicado:
-            del database_documento(id_usuario)[i]
-            return database_documento
-    return None
+    return lista.remove()
+  
 
 
 def actualizar_documento(doc: DocumentoInDB, id_usuario: str):
