@@ -80,14 +80,12 @@ async def crear_perfil_usuario(usuario: persona):
 
 
 @app.put("/usuario/perfil/")
-async def modificar_perfil_usuario(usuario: personaIn):
+async def modificar_perfil_usuario(usuario: persona):
 
     usuario_db = getUsuario(usuario.idUsuario)
-
     if usuario_db is None:
         raise HTTPException(status_code=404, detail="El usuario no existe")
 
     updateUsuario(usuario_db)
-
     usuario_out = personaOut(**usuario_db.dict())
     return usuario_out
