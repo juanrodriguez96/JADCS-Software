@@ -70,7 +70,21 @@ async def crear_perfil_usuario(usuario: personaIn):
     if usuario_db == None:
         createUsuario(usuario)
     elif usuario_db != None:
-        return {usuario.idUsuario,"Ya existe"}
+        return {usuario: "Ya existe"}
+
+    usuario_out = personaOut(**usuario_db.dict())
+    return usuario_out
+
+#Operación PUT (UPDATE) para perfil de usuario
+@api.put("/usuario/perfil/")
+async def modificar_perfil_usuario(usuario: personaIn):
+
+    usuario_db = getUsuario(usuario.idUsuario)
+
+    if usuario_db == None:
+        raise HTTPException(status_code=404, detail="El usuario no existe")
+
+    updateUsuario(usuario_db)
 
     usuario_out = personaOut(**usuario_db.dict())
     return usuario_out
