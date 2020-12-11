@@ -1,5 +1,6 @@
 from db.resumen_estado_db import listar_documentos_usuario, definir_semaforo
 from db.perfil_usuario_db import getUsuario
+from modelos.perfil_usuario_db import personaIn, personaOut
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -20,3 +21,17 @@ async def lista_doc_usuario(nombre: str):
     for documento in lista_doc:
         definir_semaforo(documento)
     return lista_doc
+
+#Operación POST (CREATE) para perfil de usuario
+@api.post("/usuario/perfil/")
+async def crear_perfil_usuario(usuario: personaIn):
+
+    usuario_db = getUsuario(usuario.idUsuario)
+
+    if usuario_db == None:
+        createUsuario(usuario)
+    elif usuario_db != None:
+        return {usuario.idUsuario,"Ya existe"}
+
+    usuario_out = personaOut(**usuario_db.dict())
+    return usuario_out
