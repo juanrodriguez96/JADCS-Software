@@ -24,12 +24,13 @@ async def lista_doc_usuario(nombre: str):
 
 @app.post("/cargar/documento/")
 async def agregar_doc(documento: resumen_estado_db.DocumentoInDB):
-   operacion_exitosa = resumen_estado_db.agregar_doc_lista(documento)
-    if operacion_exitosa and (getUsuario(id_usuario)):
-        definir_semaforo(documento_in_db)
-        database_documento[id_usuario].append(documento_in_db)
-        return database_documento 
-    else: 
-        raise HTTPException(status_code=400, detail="El radicado ya existe en la base de datos")  
+    operacion_exitosa = resumen_estado_db.agregar_doc_lista(documento)
+    if operacion_exitosa:
+        if (getUsuario(id_usuario)):
+            definir_semaforo(documento_in_db)
+            database_documento[id_usuario].append(documento_in_db)
+            return database_documento 
+        else: 
+            raise HTTPException(status_code=400, detail="El radicado ya existe en la base de datos")  
     
      
