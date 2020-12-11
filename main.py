@@ -4,7 +4,7 @@ from db.perfil_usuario_db import persona
 from db.perfil_usuario_db import getUsuario, updateUsuario, createUsuario
 from db.supervision_db import Supervision
 from db.supervision_db import getSupervision, updateSupervision
-from modelos.perfil_usuario_db import personaIn, personaOut
+from modelos.perfil_usuario_modelo import personaIn, personaOut
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -27,42 +27,46 @@ async def lista_doc_usuario(nombre: str):
     return lista_doc
 
 
-@app.post("/cargar/documento/")
-async def agregar_doc(documento: resumen_estado_db.DocumentoInDB):
-    operacion_exitosa = resumen_estado_db.agregar_doc_lista(documento)
+@app.post("/cargar/documento")
+async def agregar_doc(documento: DocumentoIn, nombre: str):
+    if getUsuario(nombre) is None:
+        raise HTTPException(status_code=404, detail="El usuario no existe")
+
+    definir_semaforo(documento)
+    operacion_exitosa = agregar_doc_lista(documento, nombre)
+
     if operacion_exitosa:
-        if (getUsuario(id_usuario)):
-            definir_semaforo(documento_in_db)
-            database_documento[id_usuario].append(documento_in_db)
-            return database_documento 
-        else: 
-            raise HTTPException(status_code=400, detail="El radicado ya existe en la base de datos")  
-    
-#Operación GET (READ) para perfil de usuario
+        return operacion_exitosa
+    else:
+        return {documento: "Ya esta asignado a" + nombre}
+
+
+# Operación GET (READ) para perfil de usuario
+
 @app.get("/usuario/perfil/{usuario}")
 async def get_Equipo(usuario: str):
     user = getUsuario(usuario)
     if user == None:
         raise HTTPException(status_code=404, detail="El usuario no existe")
-    
+
     # Mostrar si el usuario tiene un equipo a cargo
     equipo = getSupervision(usuario)
     if len(equipo) == 0:
-        return {"Perfil" : {"Usuario": user.idUsuario,
-                        "Nombre" :user.nombre,
-                        "Apellido" : user.apellido,
-                        "Categoria" : user.categoria,
-                        "Equipo" : "Nadie a cargo"}}
+        return {"Perfil": {"Usuario": user.idUsuario,
+                           "Nombre": user.nombre,
+                           "Apellido": user.apellido,
+                           "Categoria": user.categoria,
+                           "Equipo": "Nadie a cargo"}}
 
-    return {"Perfil" : {"Usuario": user.idUsuario,
-                        "Nombre" :user.nombre,
-                        "Apellido" : user.apellido,
-                        "Categoria" : user.categoria,
-                        "Equipo" : equipo}}
+    return {"Perfil": {"Usuario": user.idUsuario,
+                       "Nombre": user.nombre,
+                       "Apellido": user.apellido,
+                       "Categoria": user.categoria,
+                       "Equipo": equipo}}
 
 
-#Operación POST (CREATE) para perfil de usuario
-@api.post("/usuario/perfil/")
+# Operación POST (CREATE) para perfil de usuario
+@app.post("/usuario/perfil/")
 async def crear_perfil_usuario(usuario: personaIn):
 
     usuario_db = getUsuario(usuario.idUsuario)
@@ -75,13 +79,15 @@ async def crear_perfil_usuario(usuario: personaIn):
     usuario_out = personaOut(**usuario_db.dict())
     return usuario_out
 
-#Operación PUT (UPDATE) para perfil de usuario
-@api.put("/usuario/perfil/")
+# Operación PUT (UPDATE) para perfil de usuario
+
+
+@app.put("/usuario/perfil/")
 async def modificar_perfil_usuario(usuario: personaIn):
 
     usuario_db = getUsuario(usuario.idUsuario)
 
-    if usuario_db == None:
+    if usuario_db is None:
         raise HTTPException(status_code=404, detail="El usuario no existe")
 
     updateUsuario(usuario_db)

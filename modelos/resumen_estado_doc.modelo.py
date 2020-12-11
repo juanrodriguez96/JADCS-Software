@@ -1,12 +1,15 @@
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import date
 
 
 class DocumentoIn(BaseModel):
     id_radicado: str
-    username: str
-    fecha_asignacion: datetime
+    fecha_radicacion: date
+    fecha_asignacion: date = date.today()
+    fecha_vencimiento: date
+    tipo: str
     status: str
+    anexos: int = 0
 
 
 class DocumentoOut(BaseModel):

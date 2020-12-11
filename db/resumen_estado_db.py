@@ -11,18 +11,12 @@ class DocumentoInDB(BaseModel):
     fecha_radicacion: date
     fecha_asignacion: date = date.today()
     fecha_vencimiento: date
-    tipo: str
-    status: str
-    anexos: int = 0
     # Derecho de petición = 15(5,10,15) Tutelas = 5(5) Consultas = 25(5,15,25)
     tipo: str
     status: str
     anexos: int = 0
     semaforo: str
 
-
-database_documento = Dict[str, DocumentoInDB]
-generator = {"id": 0}
 
 database_documento = {
     "camilo24": [DocumentoInDB(**{
@@ -71,13 +65,14 @@ def listar_documentos_usuario(id_usuario: str):
     return database_documento[id_usuario]
 
 
-def agregar_doc_lista(documento_in_db: DocumentoInDB):
-    if documento_in_db.id_radicado in database_documento: 
-        return False
+def agregar_doc_lista(documento_in_db: DocumentoInDB, id_usuario: str):
+    if documento_in_db.id_radicado in database_documento[id_usuario]:
+        return None
     else:
-        database_documento[documento_in_db.id_radicado] = database_documento
-        return True
-        
+        database_documento[id_usuario].append(documento_in_db)
+        return database_documento
+
+
 def quitar_doc_lista(radicado: str, id_usuario: str):
     lista = database_documento(id_usuario)
     for i in range(len(lista)):
