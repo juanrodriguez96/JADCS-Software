@@ -3,8 +3,6 @@ from pydantic import BaseModel
 from typing import Dict
 from db.perfil_usuario_db import persona, getUsuario
 
-# date_finish = datetime.now() + timedelta(days=1) -- Para la funcion de agregar dias de vencimiento
-
 
 class DocumentoInDB(BaseModel):
     id_radicado: str
@@ -66,11 +64,17 @@ def listar_documentos_usuario(id_usuario: str):
 
 
 def agregar_doc_lista(documento_in_db: DocumentoInDB, id_usuario: str):
-    if documento_in_db.id_radicado in database_documento[id_usuario]:
-        return None
-    else:
+    radicado = documento_in_db.id_radicado
+    if id_usuario in database_documento:
+        for documento in database_documento[id_usuario]:
+            if radicado == documento.id_radicado:
+                return None
         database_documento[id_usuario].append(documento_in_db)
-        return database_documento
+    else:
+        database_documento[id_usuario] = []
+        database_documento[id_usuario].append(documento_in_db)
+
+    return database_documento[id_usuario]
 
 
 def quitar_doc_lista(radicado: str, id_usuario: str):

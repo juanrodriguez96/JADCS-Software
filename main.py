@@ -4,7 +4,9 @@ from db.perfil_usuario_db import persona
 from db.perfil_usuario_db import getUsuario, updateUsuario, createUsuario
 from db.supervision_db import Supervision
 from db.supervision_db import getSupervision, updateSupervision
+from db.resumen_estado_db import DocumentoInDB
 from modelos.perfil_usuario_modelo import personaIn, personaOut
+from modelos.resumen_estado_doc_modelo import DocumentoIn
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -32,13 +34,15 @@ async def agregar_doc(documento: DocumentoIn, nombre: str):
     if getUsuario(nombre) is None:
         raise HTTPException(status_code=404, detail="El usuario no existe")
 
-    definir_semaforo(documento)
-    operacion_exitosa = agregar_doc_lista(documento, nombre)
+    documento_db = DocumentoInDB(**documento.dict(), semaforo="")
 
-    if operacion_exitosa:
-        return operacion_exitosa
-    else:
-        return {documento: "Ya esta asignado a" + nombre}
+    definir_semaforo(documento_db)
+    operacion_exitosa = agregar_doc_lista(documento_db, nombre)
+
+    if operacion_exitosa is None:
+        return {documento.id_radicado: "Ya estaba asignado a " + nombre}
+
+    return operacion_exitosa
 
 
 # Operación GET (READ) para perfil de usuario
@@ -67,16 +71,15 @@ async def get_Equipo(usuario: str):
 
 # Operación POST (CREATE) para perfil de usuario
 @app.post("/usuario/perfil/")
-async def crear_perfil_usuario(usuario: personaIn):
+async def crear_perfil_usuario(usuario: persona):
 
-    usuario_db = getUsuario(usuario.idUsuario)
-
-    if usuario_db == None:
+    usuario_in_db = getUsuario(usuario.idUsuario)
+    if usuario_in_db is None:
         createUsuario(usuario)
-    elif usuario_db != None:
-        return {usuario: "Ya existe"}
+    else:
+        return {usuario.idUsuario: "Ya existe"}
 
-    usuario_out = personaOut(**usuario_db.dict())
+    usuario_out = personaOut(**usuario.dict())
     return usuario_out
 
 # Operación PUT (UPDATE) para perfil de usuario

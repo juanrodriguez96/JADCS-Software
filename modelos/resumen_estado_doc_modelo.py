@@ -15,5 +15,5 @@ class DocumentoIn(BaseModel):
 class DocumentoOut(BaseModel):
     id_radicado: str
     username: str
-    fecha_asignacion: datetime
+    fecha_asignacion: date
     status: str
