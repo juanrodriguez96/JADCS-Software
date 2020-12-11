@@ -1,5 +1,10 @@
 from db.resumen_estado_db import listar_documentos_usuario, definir_semaforo
 from db.perfil_usuario_db import getUsuario
+from db.perfil_usuario_db import persona
+from db.perfil_usuario_db import getUsuario, updateUsuario, createUsuario
+from db.supervision_db import Supervision
+from db.supervision_db import getSupervision, updateSupervision
+
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
@@ -20,3 +25,23 @@ async def lista_doc_usuario(nombre: str):
     for documento in lista_doc:
         definir_semaforo(documento)
     return lista_doc
+
+@app.get("/usuario/perfil/{usuario}")
+async def get_Equipo(usuario: str):
+    user = getUsuario(usuario)
+    if user == None:
+        raise HTTPException(status_code=404, detail="El usuario no existe")
+
+    equipo = getSupervision(usuario)
+    if len(equipo) == 0:
+        return {"Perfil" : {"Usuario": user.idUsuario,
+                        "Nombre" :user.nombre,
+                        "Apellido" : user.apellido,
+                        "Categoria" : user.categoria,
+                        "Equipo" : "Nadie a cargo"}}
+
+    return {"Perfil" : {"Usuario": user.idUsuario,
+                        "Nombre" :user.nombre,
+                        "Apellido" : user.apellido,
+                        "Categoria" : user.categoria,
+                        "Equipo" : equipo}}
