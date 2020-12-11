@@ -1,4 +1,4 @@
-from db.resumen_estado_db import listar_documentos_usuario, definir_semaforo
+from db.resumen_estado_db import listar_documentos_usuario, definir_semaforo, agregar_doc_lista
 from db.perfil_usuario_db import getUsuario
 from fastapi import FastAPI, HTTPException
 
@@ -20,3 +20,16 @@ async def lista_doc_usuario(nombre: str):
     for documento in lista_doc:
         definir_semaforo(documento)
     return lista_doc
+
+
+@app.post("/cargar/documento/")
+async def agregar_doc(documento: resumen_estado_db.DocumentoInDB):
+   operacion_exitosa = resumen_estado_db.agregar_doc_lista(documento)
+    if operacion_exitosa and (getUsuario(id_usuario)):
+        definir_semaforo(documento_in_db)
+        database_documento[id_usuario].append(documento_in_db)
+        return database_documento 
+    else: 
+        raise HTTPException(status_code=400, detail="El radicado ya existe en la base de datos")  
+    
+     

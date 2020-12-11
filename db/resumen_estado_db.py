@@ -71,14 +71,13 @@ def listar_documentos_usuario(id_usuario: str):
     return database_documento[id_usuario]
 
 
-def agregar_doc_lista(documento_in_db: DocumentoInDB, id_usuario: str):
-    if(getUsuario(id_usuario)):
-        # Creo que esto (el semaforo) se puede incluir en el endpoint(main) y no en este método
-        definir_semaforo(documento_in_db)
-        database_documento[id_usuario].append(documento_in_db)
-        return database_documento
-
-
+def agregar_doc_lista(documento_in_db: DocumentoInDB):
+    if documento_in_db.id_radicado in database_documento: 
+        return False
+    else:
+        database_documento[documento_in_db.id_radicado] = database_documento
+        return True
+        
 def quitar_doc_lista(radicado: str, id_usuario: str):
     lista = database_documento(id_usuario)
     for i in range(len(lista)):
