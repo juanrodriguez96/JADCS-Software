@@ -62,7 +62,7 @@ async def get_Equipo(usuario: str):
 
 
 #Operación POST (CREATE) para perfil de usuario
-@api.post("/usuario/perfil/")
+@app.post("/usuario/perfil/")
 async def crear_perfil_usuario(usuario: personaIn):
 
     usuario_db = getUsuario(usuario.idUsuario)
@@ -76,7 +76,7 @@ async def crear_perfil_usuario(usuario: personaIn):
     return usuario_out
 
 #Operación PUT (UPDATE) para perfil de usuario
-@api.put("/usuario/perfil/")
+@app.put("/usuario/perfil/")
 async def modificar_perfil_usuario(usuario: personaIn):
 
     usuario_db = getUsuario(usuario.idUsuario)
