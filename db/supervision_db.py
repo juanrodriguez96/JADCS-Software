@@ -9,13 +9,15 @@ database_Supervision = Dict[str, str]
 
 
 database_Supervision = {
-	"andres18":"camilo24"
+	"andres18":"camilo24",
+	"robin":"batman",
+	"batgirl":"batman"
 }
 
 def getSupervision(jefe : str):
 	emp =[]
-	for k,v in database_Supervision:
-		if v==jefe:
+	for k,v in database_Supervision.items():
+		if v==jefe:	
 			emp.append(k)
 
 	return emp
