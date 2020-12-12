@@ -94,7 +94,12 @@ async def modificar_perfil_usuario(usuario: persona):
     usuario_db = getUsuario(usuario.idUsuario)
     if usuario_db is None:
         raise HTTPException(status_code=404, detail="El usuario no existe")
+    if usuario_db.contrasenia != usuario.contrasenia:
+        return {"Autenticado": False}
+
+    usuario_db.nombre = usuario.nombre
+    usuario_db.apellido = usuario.apellido
+    usuario_db.categoria = usuario.categoria
 
     updateUsuario(usuario_db)
-    usuario_out = personaOut(**usuario_db.dict())
-    return usuario_out
+    return {usuario.idUsuario: "Modificado correctamente"}
